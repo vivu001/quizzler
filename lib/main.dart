@@ -34,12 +34,17 @@ class _QuizPageState extends State<QuizPage> {
   };
 
   int currentPos = 0;
+  int _count = 0;
 
-  void _increaseQuestionsNr() {
-    if (currentPos < questions.length - 1) {
-      setState(() {
-        currentPos++;
-      });
+  void _addIcon() {
+    if (currentPos < questions.length && _count == 0) {
+      if (currentPos == questions.length - 1) _count++;
+      bool result = questions.values.elementAt(currentPos);
+      if (result) {
+        scores.add(Icon(Icons.check, color: Colors.green));
+      } else {
+        scores.add(Icon(Icons.close, color: Colors.deepOrange));
+      }
     }
   }
 
@@ -61,17 +66,6 @@ class _QuizPageState extends State<QuizPage> {
         ),
       ),
     );
-  }
-
-  void _addIcon() {
-    if (currentPos != questions.length) {
-      bool result = questions.values.elementAt(currentPos);
-      if (result) {
-        scores.add(Icon(Icons.check, color: Colors.green));
-      } else {
-        scores.add(Icon(Icons.close, color: Colors.deepOrange));
-      }
-    }
   }
 
   @override
@@ -98,8 +92,9 @@ class _QuizPageState extends State<QuizPage> {
                 //The user picked true.
                 setState(() {
                   _addIcon();
-                  _increaseQuestionsNr();
-                  _showQuestion();
+                  if (currentPos < questions.length - 1) {
+                    currentPos++;
+                  }
                 });
               },
             ),
@@ -121,8 +116,9 @@ class _QuizPageState extends State<QuizPage> {
                 //The user picked false.
                 setState(() {
                   _addIcon();
-                  _increaseQuestionsNr();
-                  _showQuestion();
+                  if (currentPos < questions.length - 1) {
+                    currentPos++;
+                  }
                 });
               },
             ),
