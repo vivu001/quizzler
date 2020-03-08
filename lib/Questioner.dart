@@ -1,9 +1,10 @@
 import 'package:quizzler/Question.dart';
 
 class Questioner {
-  int _currentPos = 0;
+  static int _currentPos = 0;
 
   List<Question> _questions = [];
+  bool _lastQuestionFlag = false;
 
   Questioner() {
     _questions = [
@@ -19,12 +20,14 @@ class Questioner {
   }
 
   set currentPos(int value) {
-    _currentPos = (value < _questions.length) ? value : value - 1;
+    _currentPos = value;
   }
 
   List<Question> get questions => _questions;
 
-  bool isLastQuestion() {
-    return (currentPos == questions.length - 1);
+  bool get lastQuestionFlag => _lastQuestionFlag;
+
+  set lastQuestionFlag(bool value) {
+    _lastQuestionFlag = value;
   }
 }
