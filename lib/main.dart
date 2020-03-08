@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quizzler/IconImporter.dart';
+import 'package:quizzler/Question.dart';
+import 'package:quizzler/Questioner.dart';
 
 void main() => runApp(Quizzler());
 
@@ -25,31 +28,13 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Icon> scores = [];
+  // import questions
+  static Questioner questioner = Questioner();
 
-  Map<String, bool> questions = {
-    'You can lead a cow down stairs but not up stairs.': false,
-    'Approximately one quarter of human bones are in the feet.': true,
-    'A slug\'s blood is green.': true
-  };
+  List<Question> qns = questioner.questions;
 
-  int currentPos = 0;
-  int _count = 0;
-
-  void _addIcon() {
-    if (currentPos < questions.length && _count == 0) {
-      if (currentPos == questions.length - 1) _count++;
-      bool result = questions.values.elementAt(currentPos);
-      if (result) {
-        scores.add(Icon(Icons.check, color: Colors.green));
-      } else {
-        scores.add(Icon(Icons.close, color: Colors.deepOrange));
-      }
-    }
-  }
-
-  Widget _showQuestion() {
-    String question = questions.keys.elementAt(currentPos);
+  Widget _nextQuestion() {
+    String question = qns.elementAt(questioner.currentPos).content;
     return Expanded(
       flex: 5,
       child: Padding(
@@ -68,13 +53,16 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
+  // create importer for icon
+  IconImporter iconImporter = IconImporter(questioner);
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _showQuestion(),
+        _nextQuestion(),
         Expanded(
           child: Padding(
             padding: EdgeInsets.all(15.0),
@@ -91,10 +79,8 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 //The user picked true.
                 setState(() {
-                  _addIcon();
-                  if (currentPos < questions.length - 1) {
-                    currentPos++;
-                  }
+                  iconImporter.addIcon();
+                  print(questioner.currentPos);
                 });
               },
             ),
@@ -115,16 +101,13 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 //The user picked false.
                 setState(() {
-                  _addIcon();
-                  if (currentPos < questions.length - 1) {
-                    currentPos++;
-                  }
+                  iconImporter.addIcon(answer: false);
                 });
               },
             ),
           ),
         ),
-        Row(children: scores)
+        Row(children: iconImporter.scoreIcons)
       ],
     );
   }
