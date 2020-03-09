@@ -28,4 +28,8 @@ class IconImporter {
   }
 
   List<Icon> get scoreIcons => _scoreIcons;
+
+  void removeIcons() {
+    _scoreIcons.clear();
+  }
 }

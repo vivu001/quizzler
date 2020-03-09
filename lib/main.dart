@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_alert/flutter_alert.dart';
 import 'package:quizzler/IconImporter.dart';
 import 'package:quizzler/Question.dart';
 import 'package:quizzler/Questioner.dart';
@@ -28,7 +29,6 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-
   // import questions
   static Questioner questioner = Questioner();
 
@@ -51,6 +51,29 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showQuestionDialog() {
+    showAlert(
+      context: context,
+      title: "Finished!",
+      body: "Play again?",
+      actions: [
+        AlertAction(
+          text: "Play",
+          isDestructiveAction: true,
+          onPressed: () {
+            // TODO
+            setState(() {
+              questioner.currentPos = 0;
+              questioner.lastQuestionFlag = false;
+              iconImporter.removeIcons();
+            });
+          },
+        ),
+      ],
+      cancelable: true,
     );
   }
 
@@ -82,6 +105,9 @@ class _QuizPageState extends State<QuizPage> {
                 setState(() {
                   iconImporter.addIcon();
                   print(questioner.currentPos);
+                  if (questioner.lastQuestionFlag) {
+                    _showQuestionDialog();
+                  }
                 });
               },
             ),
